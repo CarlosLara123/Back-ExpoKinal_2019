@@ -139,19 +139,9 @@ function ocuparAsiento(req, res) {
 }
 
 function confirmarEntrada(req, res) {
-    var charlaId = req.params.id;
-    var userId = req.user.sub;
-    Charla.findById(charlaId, (err, enc) => {
+    var charlaId = req.params.id
 
-        if (err) return res.status(500).send({ message: 'error en la peticion' });
-        if (!enc) return res.status(404).send({ message: 'la charla no existe' });
-
-        for (let i = 0; i < enc.llegados.length; i++) {
-            if (enc.llegados[i] == userId) {
-                return res.status(200).send({ message: 'Ya marcaste entrada, no se puede cancelar entrada' });
-            }
-        }
-        Charla.findByIdAndUpdate(charlaId, { $inc: { confirmado: 1 }, $addToSet: { ocupados: userId } }, { new: true }, (err, newOcupado) => {
+   Charla.findByIdAndUpdate(charlaId, { $inc: { confirmado: 1 }},{ new: true }, (err, newOcupado) => {
             console.log(err)
             if (err) return res.status(500).send({ message: 'error en la peticion' });
 
@@ -160,7 +150,7 @@ function confirmarEntrada(req, res) {
             return res.status(200).send({ message: 'gracias por presentarse, pase' });
 
         })
-    })
+
 }
 
 function cancelarEntrada(req, res) {
@@ -219,7 +209,7 @@ function misConferencias(req,res) {
 
     Charla.find({ocupados: userId}, (err, enc)=>{
         if (err) return res.status(500).send({ message: 'error en la peticion' });
-        if (!enc) return res.status(404).send({ message: 'no tienes charla' });            
+        if (!enc) return res.status(404).send({ message: 'no tienes charla' });
 
         return res.status(200).send({ enc: enc })
     })
